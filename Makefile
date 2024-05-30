@@ -8,8 +8,8 @@ INC = ./include
 BIN = ./bin
 
 MAIN_EXE = $(BIN)/main
-MAIN_HDRS = $(INC)/movie.h
-MAIN_OBJ = $(OBJ)/main.o $(OBJ)/movie.o
+MAIN_HDRS = $(INC)/movie.h $(INC)/catalog.h
+MAIN_OBJ = $(OBJ)/main.o $(OBJ)/movie.o $(OBJ)/catalog.o
 
 all: folders $(MAIN_EXE)
 
@@ -19,11 +19,14 @@ folders:
 $(MAIN_EXE): $(MAIN_OBJ)
 	$(CC) -pg -o $(MAIN_EXE) $(MAIN_OBJ) $(LIBS)
 
-$(MAIN_OBJ): $(SRC)/main.c
-	$(CC) $(CFLAGS) $(SRC)/main.c -o $(OBJ)/main.o
-
 $(OBJ)/movie.o: $(SRC)/movie.c $(MAIN_HDRS)
 	$(CC) $(CFLAGS) $(SRC)/movie.c -o $(OBJ)/movie.o
+
+$(OBJ)/catalog.o: $(SRC)/catalog.c $(MAIN_HDRS)
+	$(CC) $(CFLAGS) $(SRC)/catalog.c -o $(OBJ)/catalog.o
+
+$(OBJ)/main.o: $(SRC)/main.c
+	$(CC) $(CFLAGS) $(SRC)/main.c -o $(OBJ)/main.o
 
 clean:
 	rm -rf $(OBJ) $(BIN)
