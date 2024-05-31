@@ -4,8 +4,8 @@
 // Author	: Pedro de Oliveira Guedes
 //---------------------------------------------------------------------
 
-#ifndef NETWORK_CONFIG
-#define NETWORK_CONFIG
+#ifndef NETWORK_CONFIG_H
+#define NETWORK_CONFIG_H
 
 #include <stdint.h>
 #include <stddef.h>
