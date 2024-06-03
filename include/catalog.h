@@ -9,8 +9,10 @@
 
 #include "movie.h"
 
+#define CATALOG_SIZE 3
+
 typedef struct Catalog {
-    Movie *movies[3];
+    Movie *movies[CATALOG_SIZE];
 } Catalog;
 
 /**

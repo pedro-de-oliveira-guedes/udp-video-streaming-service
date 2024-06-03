@@ -50,13 +50,13 @@ Catalog* createCatalog() {
 }
 
 void displayCatalog(Catalog *catalog) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < CATALOG_SIZE; i++) {
         printf("$ %d - %s\n", i, catalog->movies[i]->title);
     }
 }
 
 void destroyCatalog(Catalog *catalog) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < CATALOG_SIZE; i++) {
         free(catalog->movies[i]);
     }
 
