@@ -19,20 +19,20 @@ typedef struct Catalog {
  * 
  * @return A pointer to the newly created Catalog object.
  */
-Catalog* create_catalog();
+Catalog* createCatalog();
 
 /**
  * @brief This function takes a pointer to a Catalog object and displays its information.
  *
  * @param catalog A pointer to the Catalog object to be displayed.
  */
-void display_catalog(Catalog *catalog);
+void displayCatalog(Catalog *catalog);
 
 /**
  * @brief This function releases the memory allocated for the catalog object and all its associated resources.
  *
  * @param catalog The catalog object to be destroyed.
  */
-void destroy_catalog(Catalog *catalog);
+void destroyCatalog(Catalog *catalog);
 
 #endif

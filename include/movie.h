@@ -20,13 +20,13 @@ typedef struct {
  *               The array must have a size of 5.
  * @return A pointer to the newly created Movie object.
  */
-Movie *create_movie(char *title, char *script[5]);
+Movie *createMovie(char *title, char *script[5]);
 
 /**
  * @brief Displays the script of the given movie.
  *
  * @param movie The movie to be run.
  */
-void run_movie(Movie *movie);
+void runMovie(Movie *movie);
 
 #endif

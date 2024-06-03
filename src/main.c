@@ -1,11 +1,11 @@
 #include "catalog.h"
 
 int main(int argc, char **argv) {
-    Catalog *catalog = create_catalog();
+    Catalog *catalog = createCatalog();
 
-    display_catalog(catalog);
+    displayCatalog(catalog);
 
-    destroy_catalog(catalog);
+    destroyCatalog(catalog);
 
     return 0;
 }

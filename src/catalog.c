@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 Movie *get_lord_of_the_rings_movie() {
-    Movie *lord_of_the_rings = create_movie("O Senhor dos Anéis", (char *[]) {
+    Movie *lord_of_the_rings = createMovie("O Senhor dos Anéis", (char *[]) {
         "Um Anel para a todos governar",
         "Na Terra de Mordor onde as Sombras se deitam",
         "Não é o que temos, mas o que fazemos com o que temos",
@@ -16,7 +16,7 @@ Movie *get_lord_of_the_rings_movie() {
 }
 
 Movie *get_godfather_movie() {
-    Movie *godfather = create_movie("O Poderoso Chefão", (char *[]) {
+    Movie *godfather = createMovie("O Poderoso Chefão", (char *[]) {
         "Vou fazer uma oferta que ele não pode recusar",
         "Mantenha seus amigos por perto, mas seus inimigos mais perto ainda",
         "É melhor ser temido que amado",
@@ -28,7 +28,7 @@ Movie *get_godfather_movie() {
 }
 
 Movie *get_fight_club_movie() {
-    Movie *fight_club = create_movie("Clube da Luta", (char *[]) {
+    Movie *fight_club = createMovie("Clube da Luta", (char *[]) {
         "Primeira regra do Clube da Luta: você não fala sobre o Clube da Luta",
         "Segunda regra do Clube da Luta: você não fala sobre o Clube da Luta",
         "O que você possui acabará possuindo você",
@@ -39,7 +39,7 @@ Movie *get_fight_club_movie() {
     return fight_club;
 }
 
-Catalog* create_catalog() {
+Catalog* createCatalog() {
     Catalog *catalog = (Catalog *) malloc(sizeof(Catalog));
 
     catalog->movies[0] = get_lord_of_the_rings_movie();
@@ -49,13 +49,13 @@ Catalog* create_catalog() {
     return catalog;
 }
 
-void display_catalog(Catalog *catalog) {
+void displayCatalog(Catalog *catalog) {
     for (int i = 0; i < 3; i++) {
         printf("$ %d - %s\n", i, catalog->movies[i]->title);
     }
 }
 
-void destroy_catalog(Catalog *catalog) {
+void destroyCatalog(Catalog *catalog) {
     for (int i = 0; i < 3; i++) {
         free(catalog->movies[i]);
     }
