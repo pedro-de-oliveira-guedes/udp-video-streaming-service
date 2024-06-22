@@ -11,7 +11,7 @@
 
 typedef struct {
     char *title;
-    char *script[5];
+    char *script[SCRIPT_LINES];
 } Movie;
 
 /**
