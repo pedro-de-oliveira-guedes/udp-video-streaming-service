@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Movie *createMovie(char *title, char *script[5]) {
+Movie *createMovie(char *title, char *script[SCRIPT_LINES]) {
     Movie *movie = (Movie *) malloc(sizeof(Movie));
 
     movie->title = title;
@@ -15,7 +15,7 @@ Movie *createMovie(char *title, char *script[5]) {
 }
 
 void runMovie(Movie *movie) {
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < SCRIPT_LINES; i++) {
         printf("Scene %d: %s\n", i, movie->script[i]);
     }
 }

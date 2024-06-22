@@ -7,6 +7,8 @@
 #ifndef MOVIE_H
 #define MOVIE_H
 
+#define SCRIPT_LINES 5
+
 typedef struct {
     char *title;
     char *script[5];
@@ -20,7 +22,7 @@ typedef struct {
  *               The array must have a size of 5.
  * @return A pointer to the newly created Movie object.
  */
-Movie *createMovie(char *title, char *script[5]);
+Movie *createMovie(char *title, char *script[SCRIPT_LINES]);
 
 /**
  * @brief Displays the script of the given movie.
