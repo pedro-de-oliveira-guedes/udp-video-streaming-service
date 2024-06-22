@@ -62,6 +62,11 @@ void handleUserMenuChoice(StreamingClient *streamingClient) {
 void closeStreamingClient(StreamingClient *streamingClient) {
     printf("Saindo do apliacativo de streaming...\n");
 
+    int connectionEnd = -1;
+    if (send(streamingClient->client->currentServerSocket, &connectionEnd, sizeof(int), 0) == -1) {
+        logError("Erro ao enviar a mensagem de encerramento da conexão para o servidor.");
+    }
+
     closeClient(streamingClient->client);
     free(streamingClient);
 
