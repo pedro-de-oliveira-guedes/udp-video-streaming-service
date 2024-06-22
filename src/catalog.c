@@ -51,7 +51,7 @@ Catalog* createCatalog() {
 
 void displayCatalog(Catalog *catalog) {
     for (int i = 0; i < CATALOG_SIZE; i++) {
-        printf("$ %d - %s\n", i, catalog->movies[i]->title);
+        printf("$ %d - %s\n", i + 1, catalog->movies[i]->title);
     }
 }
 
