@@ -8,9 +8,11 @@
 #define STREAMING_CLIENT_H
 
 #include "client.h"
+#include "catalog.h"
 
 typedef struct {
     Client *client;
+    Catalog *cachedCatalog;
 } StreamingClient;
 
 /**

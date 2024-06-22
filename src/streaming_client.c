@@ -12,6 +12,7 @@ StreamingClient* createStreamingClient(int argc, char **argv) {
 
     StreamingClient *streamingClient = (StreamingClient *) malloc(sizeof(StreamingClient));
     streamingClient->client = client;
+    streamingClient->cachedCatalog = NULL;
 
     return streamingClient;
 }
@@ -21,7 +22,11 @@ void displayStreamingMenu(StreamingClient *streamingClient) {
     printf("#          Serviço de Streaming de Filmes - Menu Principal           #\n");
     printf("######################################################################\n");
     printf("$ 0 - Sair\n");
-    requestAndDisplayCatalog(streamingClient);
+    if (streamingClient->cachedCatalog != NULL) {
+        displayCatalog(streamingClient->cachedCatalog);
+    } else {
+        requestAndDisplayCatalog(streamingClient);
+    }
 }
 
 void requestAndDisplayCatalog(StreamingClient *streamingClient) {
@@ -29,6 +34,7 @@ void requestAndDisplayCatalog(StreamingClient *streamingClient) {
         logError("Erro ao conectar ao servidor.");
     }
 
+    Catalog *currentCatalog = (Catalog *) malloc(sizeof(Catalog));
     while (1) {
         int movieId;
         if (recv(streamingClient->client->currentServerSocket, &movieId, sizeof(int), 0) == -1) {
@@ -43,7 +49,13 @@ void requestAndDisplayCatalog(StreamingClient *streamingClient) {
             logError("Erro ao receber o título do filme para exibição do catálogo.");
         }
         printf("$ %d - %s\n", movieId, movieTitle);
+
+        Movie *newMovie = (Movie *) malloc(sizeof(Movie));
+        newMovie->title = movieTitle;
+        currentCatalog->movies[movieId - 1] = newMovie;
     }
+
+    streamingClient->cachedCatalog = currentCatalog;
 }
 
 void handleUserMenuChoice(StreamingClient *streamingClient) {
