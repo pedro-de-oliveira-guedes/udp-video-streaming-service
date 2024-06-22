@@ -39,7 +39,7 @@ void requestAndDisplayCatalog(StreamingClient *streamingClient) {
         }
 
         char movieTitle[MAX_TITLE_SIZE];
-        if (recv(streamingClient->client->currentServerSocket, &movieTitle, MAX_TITLE_SIZE, 0) == -1) {
+        if (recv(streamingClient->client->currentServerSocket, &movieTitle, sizeof(movieTitle), 0) == -1) {
             logError("Erro ao receber o título do filme para exibição do catálogo.");
         }
         printf("$ %d - %s\n", movieId, movieTitle);
