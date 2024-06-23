@@ -16,6 +16,11 @@ typedef struct {
     Catalog *catalog;
 } StreamingServer;
 
+typedef struct {
+    StreamingServer *streamingServer;
+    int clientSocket;
+} ClientThreadArgs;
+
 /**
  * @brief Creates a new StreamingServer instance.
  *
