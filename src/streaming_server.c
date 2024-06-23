@@ -24,6 +24,14 @@ StreamingServer* createStreamingServer(int argc, char **argv) {
     return streamingServer;
 }
 
+void *handleClientThread(void *data) {
+    ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) data;
+    communicateWithClient(clientThreadArgs->streamingServer, clientThreadArgs->clientSocket);
+
+    close(clientThreadArgs->clientSocket);
+    free(clientThreadArgs);
+}
+
 void communicateWithClient(StreamingServer *streamingServer, int clientSocket) {
     if (provideCatalogToClient(streamingServer, clientSocket) != 0) {
         logError("Erro ao enviar o catálogo para o cliente.");

@@ -32,6 +32,15 @@ typedef struct {
 ClientThreadArgs* createClientThreadArgs(StreamingServer *streamingServer, int clientSocket);
 
 /**
+ * @brief Handles the client requests in a separate thread.
+ * 
+ * @param data A pointer to a ClientThreadArgs instance.
+ * 
+ * @return NULL.
+ */
+void *handleClientThread(void *data);
+
+/**
  * @brief Creates a new StreamingServer instance.
  *
  * @param argc The number of command line arguments.
