@@ -37,7 +37,7 @@ void requestAndDisplayCatalog(StreamingClient *streamingClient) {
     Catalog *currentCatalog = (Catalog *) malloc(sizeof(Catalog));
     while (1) {
         int movieId;
-        if (recv(streamingClient->client->currentServerSocket, &movieId, sizeof(int), 0) == -1) {
+        if (receiveIntegerFromServer(streamingClient->client, &movieId) == -1) {
             logError("Erro ao receber o ID do filme para exibição do catálogo.");
         }
         if (movieId == -1) {
@@ -45,7 +45,7 @@ void requestAndDisplayCatalog(StreamingClient *streamingClient) {
         }
 
         char movieTitle[MAX_TITLE_SIZE];
-        if (recv(streamingClient->client->currentServerSocket, &movieTitle, sizeof(movieTitle), 0) == -1) {
+        if (receiveStringFromServer(streamingClient->client, movieTitle, MAX_TITLE_SIZE) == -1) {
             logError("Erro ao receber o título do filme para exibição do catálogo.");
         }
         printf("$ %d - %s\n", movieId, movieTitle);
@@ -80,7 +80,7 @@ void closeStreamingClient(StreamingClient *streamingClient) {
     printf("Saindo do apliacativo de streaming...\n");
 
     int connectionEnd = -1;
-    if (send(streamingClient->client->currentServerSocket, &connectionEnd, sizeof(int), 0) == -1) {
+    if (sendIntegerToServer(streamingClient->client, connectionEnd) == -1) {
         logError("Erro ao enviar a mensagem de encerramento da conexão para o servidor.");
     }
 
@@ -89,12 +89,12 @@ void closeStreamingClient(StreamingClient *streamingClient) {
 }
 
 void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
-    if (send(streamingClient->client->currentServerSocket, &movieId, sizeof(int), 0) == -1) {
+    if (sendIntegerToServer(streamingClient->client, movieId) == -1) {
         logError("Erro ao enviar o ID do filme para o servidor.");
     }
 
     char movieTitle[MAX_TITLE_SIZE];
-    if (recv(streamingClient->client->currentServerSocket, &movieTitle, MAX_TITLE_SIZE, 0) == -1) {
+    if (receiveStringFromServer(streamingClient->client, movieTitle, MAX_TITLE_SIZE) == -1) {
         logError("Erro ao receber o título do filme.");
     }
 
@@ -102,7 +102,7 @@ void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
 
     while (1) {
         int validScriptLine;
-        if (recv(streamingClient->client->currentServerSocket, &validScriptLine, sizeof(int), 0) == -1) {
+        if (receiveIntegerFromServer(streamingClient->client, &validScriptLine) == -1) {
             logError("Erro ao receber a confirmação de linha de script válida.");
         }
         if (validScriptLine == -1) {
@@ -111,7 +111,7 @@ void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
         }
 
         char scriptLine[MAX_SCRIPT_LINE_SIZE];
-        if (recv(streamingClient->client->currentServerSocket, &scriptLine, MAX_SCRIPT_LINE_SIZE, 0) == -1) {
+        if (receiveStringFromServer(streamingClient->client, scriptLine, MAX_SCRIPT_LINE_SIZE) == -1) {
             logError("Erro ao receber a linha de script.");
         }
         printf("> %s\n", scriptLine);
