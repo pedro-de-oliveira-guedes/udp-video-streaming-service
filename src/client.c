@@ -38,12 +38,6 @@ int connectToServer(Client *client) {
         logError("Erro ao criar o socket do cliente");
     }
 
-    // Sends a message to the server to establish the connection.
-    int startConnection = 0;
-    if (sendIntegerToServer(client, startConnection) == -1) {
-        logError("Erro ao enviar a mensagem de início de conexão para o servidor");
-    }
-
     return 0;
 }
 
