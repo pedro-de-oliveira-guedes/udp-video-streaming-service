@@ -1,13 +1,5 @@
 #include "network_config.h"
 
-#include <inttypes.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <arpa/inet.h>
-#include <sys/socket.h>
-
 void logError(char *message) {
     perror(message);
 
