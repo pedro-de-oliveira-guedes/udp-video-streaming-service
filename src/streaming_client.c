@@ -68,7 +68,12 @@ void handleUserMenuChoice(StreamingClient *streamingClient) {
         exit(0);
     }
 
-    handleMovieRequest(streamingClient, choice);
+    if (movieIdIsValid(choice)) {
+        handleMovieRequest(streamingClient, choice);
+    } else {
+        printf("A opção %d não é valida. Escolha somente um número presente no menu.\n\n\n", choice);
+        return;
+    }
 }
 
 void closeStreamingClient(StreamingClient *streamingClient) {
