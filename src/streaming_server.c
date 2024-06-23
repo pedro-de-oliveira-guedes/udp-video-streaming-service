@@ -4,6 +4,7 @@
 
 #define MAX_TITLE_SIZE 100
 #define MAX_SCRIPT_LINE_SIZE 200
+#define BUFF_SIZE 1024
 
 StreamingServer* createStreamingServer(int argc, char **argv) {
     Server *server = parseArgumentsAndCreateServer(argc, argv);
@@ -70,6 +71,23 @@ int handleClientRequests(StreamingServer *streamingServer, int clientSocket) {
     }
 
     return 0;
+}
+
+int connectToClient(Server *server) {
+    struct sockaddr_storage clientStorage;
+    socklen_t clientStorageSize = sizeof(clientStorage);
+
+    // Accept a new connection request from a client
+    int clientSocket = accept(server->socket, (struct sockaddr *) &clientStorage, &clientStorageSize);
+
+    // Formats the connection address and prints it
+    char clientAddress[BUFF_SIZE];
+    if (0 != convertAddressToString((struct sockaddr *) &clientStorage, clientAddress, BUFF_SIZE)) {
+        return -1;
+    }
+    printf("Conexão aceita de %s\n", clientAddress);
+
+    return clientSocket;
 }
 
 void closeStreamingServer(StreamingServer *streamingServer) {
