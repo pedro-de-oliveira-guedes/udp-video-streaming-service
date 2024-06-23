@@ -20,8 +20,8 @@ Server* createServer(char *ipVersion, int port) {
         logError("Erro ao inicializar o socket do servidor");
     }
 
-    // Creates a socket for TCP communication. The TCP is defined by SOCK_STREAM.
-    server->socket = socket(server->storage.ss_family, SOCK_STREAM, 0);
+    // Creates a socket for UDP communication. The UDP is defined by SOCK_DGRAM.
+    server->socket = socket(server->storage.ss_family, SOCK_DGRAM, 0);
     if (server->socket == -1) {
         logError("Erro ao criar o socket do servidor");
     }
@@ -54,11 +54,6 @@ int setupServer(Server *server) {
         return -1;
     }
 
-    // Listens for incoming connections on the server socket.
-    if (listen(server->socket, 1) == -1) {
-        return -1;
-    }
-
     // Formats the connection address to string and prints it.
     char serverAddress[BUFF_SIZE];
     if (0 != convertAddressToString((struct sockaddr *)&server->storage, serverAddress, BUFF_SIZE)) {
@@ -84,6 +79,37 @@ int connectToClient(Server *server) {
     printf("Conexão aceita de %s\n", clientAddress);
 
     return clientSocket;
+}
+
+int receiveIntegerFromClient(Server *server, int *value) {
+    socklen_t storageSize = sizeof(server->storage);
+    return recvfrom(
+            server->socket,
+            value,
+            sizeof(int),
+            0,
+            (struct sockaddr *) &server->storage,
+            &storageSize);
+}
+
+int sendIntegerToClient(Server *server, int value) {
+    return sendto(
+            server->socket,
+            &value,
+            sizeof(int),
+            0,
+            (struct sockaddr *) &server->storage,
+            sizeof(server->storage));
+}
+
+int sendStringToClient(Server *server, char buffer, size_t bufferSize) {
+    return sendto(
+            server->socket,
+            &buffer,
+            bufferSize,
+            0,
+            (struct sockaddr *) &server->storage,
+            sizeof(server->storage));
 }
 
 void closeServer(Server *server) {

@@ -32,25 +32,51 @@ Client* parseArgumentsAndCreateClient(int argc, char **argv) {
 }
 
 int connectToServer(Client *client) {
-    // Creates a socket for TCP communication. The TCP is defined by SOCK_STREAM.
-    client->currentServerSocket = socket(client->storage.ss_family, SOCK_STREAM, 0);
+    // Creates a socket for UDP communication. The UDP is defined by SOCK_DGRAM.
+    client->currentServerSocket = socket(client->storage.ss_family, SOCK_DGRAM, 0);
     if (client->currentServerSocket == -1) {
         logError("Erro ao criar o socket do cliente");
     }
 
-    // Connects the client socket to the server socket.
-    if (0 != connect(client->currentServerSocket, (struct sockaddr *)&client->storage, sizeof(client->storage))) {
-        return -1;
+    // Sends a message to the server to establish the connection.
+    int startConnection = 0;
+    if (sendIntegerToServer(client, startConnection) == -1) {
+        logError("Erro ao enviar a mensagem de início de conexão para o servidor");
     }
-
-    // Formats the connection address to string and prints it.
-    char connectedAddress[BUFF_SIZE];
-    if (0 != convertAddressToString((struct sockaddr *)&client->storage, connectedAddress, BUFF_SIZE)) {
-        return -1;
-    }
-    printf("Conectado ao servidor %s\n", connectedAddress);
 
     return 0;
+}
+
+int sendIntegerToServer(Client *client, int value) {
+    return sendto(
+        client->currentServerSocket,
+        &value,
+        sizeof(int),
+        0,
+        (struct sockaddr *)&client->storage,
+        sizeof(client->storage));
+}
+
+int receiveIntegerFromServer(Client *client, int *value) {
+    socklen_t storageSize = sizeof(client->storage);
+    return recvfrom(
+        client->currentServerSocket,
+        value,
+        sizeof(int),
+        0,
+        (struct sockaddr *)&client->storage,
+        &storageSize);
+}
+
+int receiveStringFromServer(Client *client, char *buffer, int bufferSize) {
+    socklen_t storageSize = sizeof(client->storage);
+    return recvfrom(
+        client->currentServerSocket,
+        buffer,
+        bufferSize,
+        0,
+        (struct sockaddr *)&client->storage,
+        &storageSize);
 }
 
 void closeClient(Client *client) {
