@@ -24,6 +24,15 @@ typedef struct Catalog {
 Catalog* createCatalog();
 
 /**
+ * @brief Checks if a movie ID is valid.
+ * 
+ * @param movieId The movie ID to be checked.
+ * 
+ * @return 1 if the movie ID is valid, 0 otherwise.
+ */
+int movieIdIsValid(int movieId);
+
+/**
  * @brief This function takes a pointer to a Catalog object and displays its information.
  *
  * @param catalog A pointer to the Catalog object to be displayed.

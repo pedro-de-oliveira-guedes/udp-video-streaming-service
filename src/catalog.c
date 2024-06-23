@@ -49,6 +49,10 @@ Catalog* createCatalog() {
     return catalog;
 }
 
+int movieIdIsValid(int movieId) {
+    return movieId > 0 && movieId <= CATALOG_SIZE;
+}
+
 void displayCatalog(Catalog *catalog) {
     for (int i = 0; i < CATALOG_SIZE; i++) {
         printf("$ %d - %s\n", i + 1, catalog->movies[i]->title);

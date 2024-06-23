@@ -64,10 +64,6 @@ int provideCatalogToClient(StreamingServer *streamingServer, int clientSocket) {
     return 0;
 }
 
-int movieIdIsValid(int movieId) {
-    return movieId >= 1 && movieId <= CATALOG_SIZE;
-}
-
 int handleClientRequests(StreamingServer *streamingServer, int clientSocket) {
     while (1) {
         int movieId;
