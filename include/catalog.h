@@ -10,6 +10,8 @@
 #include "movie.h"
 
 #define CATALOG_SIZE 3
+#define SHOULD_NOT_INCLUDE_SCRIPT 0
+#define SHOULD_INCLUDE_SCRIPT 1
 
 typedef struct Catalog {
     Movie *movies[CATALOG_SIZE];
