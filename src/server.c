@@ -85,3 +85,8 @@ int connectToClient(Server *server) {
 
     return clientSocket;
 }
+
+void closeServer(Server *server) {
+    close(server->socket);
+    free(server);
+}

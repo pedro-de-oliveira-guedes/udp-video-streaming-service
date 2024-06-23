@@ -56,4 +56,11 @@ int setupServer(Server *server);
  */
 int connectToClient(Server *server);
 
+/**
+ * @brief Closes the server connection and frees the allocated resources.
+ * 
+ * @param server A pointer to the Server object.
+ */
+void closeServer(Server *server);
+
 #endif
