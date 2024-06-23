@@ -12,7 +12,7 @@
 
 typedef struct {
     Client *client;
-    Catalog *cachedCatalog;
+    Catalog *catalogTitles;
 } StreamingClient;
 
 /**
@@ -30,13 +30,6 @@ StreamingClient* createStreamingClient(int argc, char **argv);
  * @param streamingClient The StreamingClient instance.
  */
 void displayStreamingMenu(StreamingClient *streamingClient);
-
-/**
- * @brief Requests the catalog from the server and displays it.
- *
- * @param streamingClient The StreamingClient instance.
- */
-void requestAndDisplayCatalog(StreamingClient *streamingClient);
 
 /**
  * @brief Handles the user's menu choice.
