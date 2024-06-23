@@ -1,6 +1,7 @@
 #include "streaming_server.h"
 
 #include <unistd.h>
+#include <pthread.h>
 
 #define MAX_TITLE_SIZE 100
 #define MAX_SCRIPT_LINE_SIZE 200
@@ -30,6 +31,7 @@ void *handleClientThread(void *data) {
 
     close(clientThreadArgs->clientSocket);
     free(clientThreadArgs);
+    pthread_exit(0);
 }
 
 void communicateWithClient(StreamingServer *streamingServer, int clientSocket) {
@@ -119,19 +121,11 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        pid_t pid = fork();
-        if (pid == -1) {
-            logError("Erro ao criar um novo processo para lidar com a conexão do cliente.");
-        } else if (pid == 0) {
-            communicateWithClient(streamingServer, clientSocket);
-            close(clientSocket);
-            exit(0);
-        } else {
-            close(clientSocket);
-        }
+        ClientThreadArgs *clientThreadData = createClientThreadArgs(streamingServer, clientSocket);
+        pthread_t clientThreadId;
+        pthread_create(&clientThreadId, NULL, handleClientThread, clientThreadData);
     }
 
     closeStreamingServer(streamingServer);
-
     return 0;
 }
