@@ -7,10 +7,9 @@
 #define MAX_SCRIPT_LINE_SIZE 200
 #define BUFF_SIZE 1024
 
-ClientThreadArgs* createClientThreadArgs(StreamingServer *streamingServer, int clientSocket) {
+ClientThreadArgs* createClientThreadArgs(StreamingServer *streamingServer) {
     ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) malloc(sizeof(ClientThreadArgs));
     clientThreadArgs->streamingServer = streamingServer;
-    clientThreadArgs->clientSocket = clientSocket;
 
     return clientThreadArgs;
 }
@@ -27,49 +26,48 @@ StreamingServer* createStreamingServer(int argc, char **argv) {
 
 void *handleClientThread(void *data) {
     ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) data;
-    communicateWithClient(clientThreadArgs->streamingServer, clientThreadArgs->clientSocket);
+    communicateWithClient(clientThreadArgs->streamingServer);
 
-    close(clientThreadArgs->clientSocket);
     free(clientThreadArgs);
     pthread_exit(0);
 }
 
-void communicateWithClient(StreamingServer *streamingServer, int clientSocket) {
-    if (provideCatalogToClient(streamingServer, clientSocket) != 0) {
+void communicateWithClient(StreamingServer *streamingServer) {
+    if (provideCatalogToClient(streamingServer) != 0) {
         logError("Erro ao enviar o catálogo para o cliente.");
     }
 
-    if (handleClientRequests(streamingServer, clientSocket) != 0) {
+    if (handleClientRequests(streamingServer) != 0) {
         logError("Erro ao lidar com as requisições do cliente.");
     }
 }
 
-int provideCatalogToClient(StreamingServer *streamingServer, int clientSocket) {
+int provideCatalogToClient(StreamingServer *streamingServer) {
     for (int i = 0; i < CATALOG_SIZE; i++) {
         int movieId = i + 1;
-        if (send(clientSocket, &movieId, sizeof(int), 0) == -1) {
+        if (sendIntegerToClient(streamingServer->server, movieId) == -1) {
             return -1;
         }
 
         char movieTitle[MAX_TITLE_SIZE];
         strcpy(movieTitle, streamingServer->catalog->movies[i]->title);
-        if (send(clientSocket, &movieTitle, sizeof(movieTitle), 0) == -1) {
+        if (sendStringToClient(streamingServer->server, *movieTitle, MAX_TITLE_SIZE) == -1) {
             return -1;
         }
     }
 
     int endOfCatalog = -1;
-    if (send(clientSocket, &endOfCatalog, sizeof(int), 0) == -1) {
+    if (sendIntegerToClient(streamingServer->server, endOfCatalog) == -1) {
         return -1;
     }
 
     return 0;
 }
 
-int handleClientRequests(StreamingServer *streamingServer, int clientSocket) {
+int handleClientRequests(StreamingServer *streamingServer) {
     while (1) {
         int movieId;
-        if (recv(clientSocket, &movieId, sizeof(int), 0) == -1) {
+        if (receiveIntegerFromClient(streamingServer->server, &movieId) == -1) {
             return -1;
         }
         if (!movieIdIsValid(movieId)) {
@@ -78,7 +76,7 @@ int handleClientRequests(StreamingServer *streamingServer, int clientSocket) {
 
         Movie *movie = streamingServer->catalog->movies[movieId - 1];
         for (int i = 0; i < SCRIPT_LINES; i++) {
-            if (send(clientSocket, movie->script[i], MAX_SCRIPT_LINE_SIZE, 0) != 0) {
+            if (sendStringToClient(streamingServer->server, *movie->script[i], MAX_SCRIPT_LINE_SIZE) == -1) {
                 return -1;
             }
         }
@@ -97,16 +95,21 @@ void closeStreamingServer(StreamingServer *streamingServer) {
 int main(int argc, char **argv) {
     StreamingServer *streamingServer = createStreamingServer(argc, argv);
 
+    if (setupServer(streamingServer->server) == -1) {
+        logError("Erro ao configurar o servidor");
+    }
+
     while (1) {
-        int clientSocket = connectToClient(streamingServer->server);
-        if (clientSocket == -1) {
-            logError("Erro ao aceitar a conexão com o cliente.");
-            continue;
+        int newClientConnection;
+        if (receiveIntegerFromClient(streamingServer->server, &newClientConnection) == -1) {
+            logError("Erro ao receber a conexão do cliente");
         }
 
-        ClientThreadArgs *clientThreadData = createClientThreadArgs(streamingServer, clientSocket);
-        pthread_t clientThreadId;
-        pthread_create(&clientThreadId, NULL, handleClientThread, clientThreadData);
+        if (newClientConnection == 0) {
+            ClientThreadArgs *clientThreadData = createClientThreadArgs(streamingServer);
+            pthread_t clientThreadId;
+            pthread_create(&clientThreadId, NULL, handleClientThread, clientThreadData);
+        }
     }
 
     closeStreamingServer(streamingServer);
