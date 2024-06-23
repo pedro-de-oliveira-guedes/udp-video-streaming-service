@@ -1,6 +1,8 @@
 #include "client.h"
 #include "network_config.h"
 
+#include <unistd.h>
+
 #define BUFF_SIZE 1024
 
 Client* createClient(char *ipVersion, char *ipAddress, int port) {
