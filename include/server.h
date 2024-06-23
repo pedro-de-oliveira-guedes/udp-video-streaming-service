@@ -48,15 +48,6 @@ Server* parseArgumentsAndCreateServer(int argc, char **argv);
 int setupServer(Server *server);
 
 /**
- * @brief Receives a client connection request, accepts it, prints the client address 
- *        and returns the client socket file descriptor.
- *
- * @param server The Server instance.
- * @return The client socket file descriptor or -1 if an error occurred.
- */
-int connectToClient(Server *server);
-
-/**
  * @brief Receives an integer value from the client.
  *
  * @param server The Server instance.
@@ -82,7 +73,7 @@ int sendIntegerToClient(Server *server, int value);
  * @param bufferSize The size of the buffer.
  * @return The number of bytes sent, or -1 if an error occurred.
  */
-int sendStringToClient(Server *server, char buffer, size_t bufferSize);
+int sendStringToClient(Server *server, char *buffer, size_t bufferSize);
 
 /**
  * @brief Closes the server connection and frees the allocated resources.

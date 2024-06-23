@@ -64,23 +64,6 @@ int setupServer(Server *server) {
     return 0;
 }
 
-int connectToClient(Server *server) {
-    struct sockaddr_storage clientStorage;
-    socklen_t clientStorageSize = sizeof(clientStorage);
-
-    // Accepts the client connection request.
-    int clientSocket = accept(server->socket, (struct sockaddr *)&clientStorage, &clientStorageSize);
-
-    // Formats the connection address to string and prints it.
-    char clientAddress[BUFF_SIZE];
-    if (0 != convertAddressToString((struct sockaddr *)&clientStorage, clientAddress, BUFF_SIZE)) {
-        return -1;
-    }
-    printf("Conexão aceita de %s\n", clientAddress);
-
-    return clientSocket;
-}
-
 int receiveIntegerFromClient(Server *server, int *value) {
     socklen_t storageSize = sizeof(server->storage);
     return recvfrom(
@@ -102,10 +85,10 @@ int sendIntegerToClient(Server *server, int value) {
             sizeof(server->storage));
 }
 
-int sendStringToClient(Server *server, char buffer, size_t bufferSize) {
+int sendStringToClient(Server *server, char *buffer, size_t bufferSize) {
     return sendto(
             server->socket,
-            &buffer,
+            buffer,
             bufferSize,
             0,
             (struct sockaddr *) &server->storage,
