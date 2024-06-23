@@ -22,6 +22,16 @@ typedef struct {
 } ClientThreadArgs;
 
 /**
+ * @brief Creates a new ClientThreadArgs instance.
+ * 
+ * @param streamingServer The StreamingServer instance.
+ * @param clientSocket The client socket file descriptor.
+ * 
+ * @return A pointer to the newly created ClientThreadArgs instance.
+ */
+ClientThreadArgs* createClientThreadArgs(StreamingServer *streamingServer, int clientSocket);
+
+/**
  * @brief Creates a new StreamingServer instance.
  *
  * @param argc The number of command line arguments.

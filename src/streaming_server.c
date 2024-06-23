@@ -6,6 +6,14 @@
 #define MAX_SCRIPT_LINE_SIZE 200
 #define BUFF_SIZE 1024
 
+ClientThreadArgs* createClientThreadArgs(StreamingServer *streamingServer, int clientSocket) {
+    ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) malloc(sizeof(ClientThreadArgs));
+    clientThreadArgs->streamingServer = streamingServer;
+    clientThreadArgs->clientSocket = clientSocket;
+
+    return clientThreadArgs;
+}
+
 StreamingServer* createStreamingServer(int argc, char **argv) {
     Server *server = parseArgumentsAndCreateServer(argc, argv);
 
