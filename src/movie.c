@@ -5,8 +5,11 @@
 
 Movie *createMovie(char *title, char *script[SCRIPT_LINES]) {
     Movie *movie = (Movie *) malloc(sizeof(Movie));
-
     movie->title = title;
+
+    if (script == NULL) {
+        return movie;
+    }
     for (int i = 0; i < SCRIPT_LINES; i++) {
         movie->script[i] = script[i];
     }

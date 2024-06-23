@@ -18,10 +18,13 @@ typedef struct Catalog {
 /**
  * @brief Creates a new Catalog object, instantiating three movies.
  *        Currently, the three movies are "The Lord of the Rings", "The Godfather" and "Fight Club".
+ *        When this function is called from the client side, the movies are created with only their titles.
+ * 
+ * @param shouldIncludeScripts A flag indicating whether the movies should include their scripts.
  * 
  * @return A pointer to the newly created Catalog object.
  */
-Catalog* createCatalog();
+Catalog* createCatalog(int shouldIncludeScripts);
 
 /**
  * @brief Checks if a movie ID is valid.
