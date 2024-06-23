@@ -7,26 +7,27 @@ OBJ = ./obj
 INC = ./include
 BIN = ./bin
 
-MAIN_EXE = $(BIN)/main
-MAIN_HDRS = $(INC)/movie.h $(INC)/catalog.h
-MAIN_OBJ = $(OBJ)/main.o $(OBJ)/movie.o $(OBJ)/catalog.o
+STREAMING_CLIENT_OBJS = $(OBJ)/movie.o $(OBJ)/catalog.o $(OBJ)/network_config.o $(OBJ)/client.o $(OBJ)/streaming_client.o
+STREAMING_CLIENT_HDRS = $(INC)/movie.h $(INC)/catalog.h $(INC)/network_config.h $(INC)/client.h $(INC)/streaming_client.h
+STREAMING_CLIENT_EXE = $(BIN)/client
 
-all: folders $(MAIN_EXE)
+STREAMING_SERVER_OBJS = $(OBJ)/movie.o $(OBJ)/catalog.o $(OBJ)/network_config.o $(OBJ)/server.o $(OBJ)/streaming_server.o
+STREAMING_SERVER_HDRS = $(INC)/movie.h $(INC)/catalog.h $(INC)/network_config.h $(INC)/server.h $(INC)/streaming_server.h
+STREAMING_SERVER_EXE = $(BIN)/server
+
+all: folders $(STREAMING_CLIENT_EXE) $(STREAMING_SERVER_EXE)
 
 folders:
 	mkdir -p $(OBJ) $(BIN)
 
-$(MAIN_EXE): $(MAIN_OBJ)
-	$(CC) -pg -o $(MAIN_EXE) $(MAIN_OBJ) $(LIBS)
+$(STREAMING_CLIENT_EXE): $(STREAMING_CLIENT_OBJS)
+	$(CC) -pg -o $(STREAMING_CLIENT_EXE) $(STREAMING_CLIENT_OBJS) $(LIBS)
 
-$(OBJ)/movie.o: $(SRC)/movie.c $(MAIN_HDRS)
-	$(CC) $(CFLAGS) $(SRC)/movie.c -o $(OBJ)/movie.o
+$(STREAMING_SERVER_EXE): $(STREAMING_SERVER_OBJS)
+	$(CC) -pg -o $(STREAMING_SERVER_EXE) $(STREAMING_SERVER_OBJS) $(LIBS)
 
-$(OBJ)/catalog.o: $(SRC)/catalog.c $(MAIN_HDRS)
-	$(CC) $(CFLAGS) $(SRC)/catalog.c -o $(OBJ)/catalog.o
-
-$(OBJ)/main.o: $(SRC)/main.c
-	$(CC) $(CFLAGS) $(SRC)/main.c -o $(OBJ)/main.o
+$(OBJ)/%.o: $(SRC)/%.c $(STREAMING_CLIENT_HDRS) $(STREAMING_SERVER_HDRS)
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
 	rm -rf $(OBJ) $(BIN)
