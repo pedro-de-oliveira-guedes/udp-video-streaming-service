@@ -81,8 +81,6 @@ void closeStreamingClient(StreamingClient *streamingClient) {
 
     closeClient(streamingClient->client);
     free(streamingClient);
-
-    exit(0);
 }
 
 void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
@@ -103,6 +101,7 @@ void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
             logError("Erro ao receber a confirmação de linha de script válida.");
         }
         if (validScriptLine == -1) {
+            printf("Fim do filme.\n\n\n\n");
             break;
         }
 
@@ -112,4 +111,15 @@ void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
         }
         printf("> %s\n", scriptLine);
     }
+}
+
+int main(int argc, char **argv) {
+    StreamingClient *streamingClient = createStreamingClient(argc, argv);
+
+    while (1) {
+        displayStreamingMenu(streamingClient);
+        handleUserMenuChoice(streamingClient);
+    }
+
+    return 0;
 }
