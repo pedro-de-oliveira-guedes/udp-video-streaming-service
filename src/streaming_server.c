@@ -95,3 +95,31 @@ void closeStreamingServer(StreamingServer *streamingServer) {
     freeCatalog(streamingServer->catalog);
     free(streamingServer);
 }
+
+
+int main(int argc, char **argv) {
+    StreamingServer *streamingServer = createStreamingServer(argc, argv);
+
+    while (1) {
+        int clientSocket = connectToClient(streamingServer->server);
+        if (clientSocket == -1) {
+            logError("Erro ao aceitar a conexão com o cliente.");
+            continue;
+        }
+
+        pid_t pid = fork();
+        if (pid == -1) {
+            logError("Erro ao criar um novo processo para lidar com a conexão do cliente.");
+        } else if (pid == 0) {
+            communicateWithClient(streamingServer, clientSocket);
+            close(clientSocket);
+            exit(0);
+        } else {
+            close(clientSocket);
+        }
+    }
+
+    closeStreamingServer(streamingServer);
+
+    return 0;
+}
