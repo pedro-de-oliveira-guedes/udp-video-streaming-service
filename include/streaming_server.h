@@ -79,15 +79,6 @@ int provideCatalogToClient(StreamingServer *streamingServer, int clientSocket);
 int handleClientRequests(StreamingServer *streamingServer, int clientSocket);
 
 /**
- * @brief Awaits a client connection request and accepts it.
- * 
- * @param server The Server instance.
- * 
- * @return The client socket file descriptor or -1 if an error occurred.
- */
-int connectToClient(Server *server);
-
-/**
  * @brief Closes the streaming server connection and frees the allocated resources.
  *
  * This function closes the streaming server connection and releases any resources

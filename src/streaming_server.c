@@ -87,26 +87,9 @@ int handleClientRequests(StreamingServer *streamingServer, int clientSocket) {
     return 0;
 }
 
-int connectToClient(Server *server) {
-    struct sockaddr_storage clientStorage;
-    socklen_t clientStorageSize = sizeof(clientStorage);
-
-    // Accept a new connection request from a client
-    int clientSocket = accept(server->socket, (struct sockaddr *) &clientStorage, &clientStorageSize);
-
-    // Formats the connection address and prints it
-    char clientAddress[BUFF_SIZE];
-    if (0 != convertAddressToString((struct sockaddr *) &clientStorage, clientAddress, BUFF_SIZE)) {
-        return -1;
-    }
-    printf("Conexão aceita de %s\n", clientAddress);
-
-    return clientSocket;
-}
-
 void closeStreamingServer(StreamingServer *streamingServer) {
     closeServer(streamingServer->server);
-    freeCatalog(streamingServer->catalog);
+    destroyCatalog(streamingServer->catalog);
     free(streamingServer);
 }
 
