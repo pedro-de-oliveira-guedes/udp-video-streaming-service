@@ -48,6 +48,34 @@ Client* parseArgumentsAndCreateClient(int argc, char **argv);
 int connectToServer(Client *client);
 
 /**
+ * @brief Sends an integer value to the server.
+ *
+ * @param client A pointer to the Client object.
+ * @param value The integer value to send.
+ * @return 0 if the value was sent successfully, -1 otherwise.
+ */
+int sendIntegerToServer(Client *client, int value);
+
+/**
+ * @brief Receives an integer value from the server.
+ *
+ * @param client A pointer to the Client object.
+ * @param value A pointer to the integer variable that will receive the value.
+ * @return 0 if the value was received successfully, -1 otherwise.
+ */
+int receiveIntegerFromServer(Client *client, int *value);
+
+/**
+ * @brief Receives a string from the server.
+ * 
+ * @param client A pointer to the Client object.
+ * @param buffer A pointer to the buffer that will receive the string.
+ * @param bufferSize The size of the buffer.
+ * @return The number of bytes received, or -1 if an error occurred.
+ */
+int receiveStringFromServer(Client *client, char *buffer, int bufferSize);
+
+/**
  * @brief Closes the client connection and frees the allocated resources.
  *
  * This function closes the client connection and releases any resources

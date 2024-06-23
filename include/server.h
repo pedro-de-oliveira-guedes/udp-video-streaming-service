@@ -57,6 +57,34 @@ int setupServer(Server *server);
 int connectToClient(Server *server);
 
 /**
+ * @brief Receives an integer value from the client.
+ *
+ * @param server The Server instance.
+ * @param value A pointer to the integer value to receive.
+ * @return 0 if the value was received successfully, -1 otherwise.
+ */
+int receiveIntegerFromClient(Server *server, int *value);
+
+/**
+ * @brief Sends an integer value to the client.
+ *
+ * @param server The Server instance.
+ * @param value The integer value to send.
+ * @return 0 if the value was sent successfully, -1 otherwise.
+ */
+int sendIntegerToClient(Server *server, int value);
+
+/**
+ * @brief Sends a string to the client.
+ * 
+ * @param server The Server instance.
+ * @param buffer The buffer containing the string to send.
+ * @param bufferSize The size of the buffer.
+ * @return The number of bytes sent, or -1 if an error occurred.
+ */
+int sendStringToClient(Server *server, char buffer, size_t bufferSize);
+
+/**
  * @brief Closes the server connection and frees the allocated resources.
  * 
  * @param server A pointer to the Server object.
