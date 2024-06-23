@@ -7,7 +7,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <sys/socket.h>
+#include "network_config.h"
 
 typedef struct {
     struct sockaddr_storage storage;

@@ -1,5 +1,4 @@
 #include "server.h"
-#include "network_config.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,7 +39,7 @@ void printServerUsage() {
     printf("Example: ./server ipv4 50501\n");
 }
 
-Server* parseServerArguments(int argc, char **argv) {
+Server* parseArgumentsAndCreateServer(int argc, char **argv) {
     if (argc != 3) {
         printServerUsage();
         exit(1);
