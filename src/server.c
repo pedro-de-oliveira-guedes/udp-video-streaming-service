@@ -54,13 +54,6 @@ int setupServer(Server *server) {
         return -1;
     }
 
-    // Formats the connection address to string and prints it.
-    char serverAddress[BUFF_SIZE];
-    if (0 != convertAddressToString((struct sockaddr *)&server->storage, serverAddress, BUFF_SIZE)) {
-        return -1;
-    }
-    printf("Servidor escutando em %s\n", serverAddress);
-
     return 0;
 }
 
