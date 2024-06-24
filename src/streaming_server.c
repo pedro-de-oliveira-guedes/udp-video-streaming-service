@@ -44,7 +44,7 @@ void *handleClientThread(void *data) {
 }
 
 int handleClientRequests(ClientThreadArgs *clientThreadArgs) {
-    Movie *movie = clientThreadArgs->catalog.movies[clientThreadArgs->movieId];
+    Movie *movie = clientThreadArgs->catalog.movies[clientThreadArgs->movieId - 1];
 
     if (sendStringToClient(&clientThreadArgs->server, (char *) movie->title, MAX_TITLE_SIZE) == -1) {
         return -1;
