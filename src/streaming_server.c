@@ -7,6 +7,9 @@
 #define MAX_SCRIPT_LINE_SIZE 200
 #define BUFF_SIZE 1024
 
+int currentlyConnectedClients = 0;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 ClientThreadArgs* createClientThreadArgs(Server server, int movieId, Catalog catalog) {
     ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) malloc(sizeof(ClientThreadArgs));
     clientThreadArgs->server = server;
@@ -31,6 +34,10 @@ void *handleClientThread(void *data) {
     if (handleClientRequests(clientThreadArgs) != 0) {
         logError("Erro ao lidar com as requisições do cliente.");
     }
+
+    pthread_mutex_lock(&mutex);
+    currentlyConnectedClients -= 1;
+    pthread_mutex_unlock(&mutex);
 
     free(clientThreadArgs);
     pthread_exit(0);
@@ -69,13 +76,26 @@ void closeStreamingServer(StreamingServer *streamingServer) {
     free(streamingServer);
 }
 
+void *clientCountSubroutine(void *data) {
+    while (1) {
+        printf("Número de clientes conectados: %d\n", currentlyConnectedClients);
+        sleep(4);
+    }
+}
 
 int main(int argc, char **argv) {
+    if (pthread_mutex_init(&mutex, NULL) != 0) {
+        logError("Erro ao inicializar o mutex");
+    }
+
     StreamingServer *streamingServer = createStreamingServer(argc, argv);
 
     if (setupServer(streamingServer->server) == -1) {
         logError("Erro ao configurar o servidor");
     }
+
+    pthread_t clientCountThreadId;
+    pthread_create(&clientCountThreadId, NULL, clientCountSubroutine, NULL);
 
     while (1) {
         ClientThreadArgs *clientThreadData = malloc(sizeof(ClientThreadArgs));
@@ -89,12 +109,17 @@ int main(int argc, char **argv) {
             clientThreadData->server = *streamingServer->server;
             clientThreadData->movieId = movieId;
             clientThreadData->catalog = *streamingServer->catalog;
+
+            pthread_mutex_lock(&mutex);
+            currentlyConnectedClients += 1;
+            pthread_mutex_unlock(&mutex);
             
             pthread_t clientThreadId;
             pthread_create(&clientThreadId, NULL, handleClientThread, clientThreadData);
         }
     }
 
+    pthread_mutex_destroy(&mutex);
     closeStreamingServer(streamingServer);
     return 0;
 }
