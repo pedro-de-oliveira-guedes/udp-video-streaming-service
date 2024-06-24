@@ -38,7 +38,7 @@ Catalog* createCatalog(int shouldIncludeScripts);
 int movieIdIsValid(int movieId);
 
 /**
- * @brief This function takes a pointer to a Catalog object and displays its information.
+ * @brief This function takes a pointer to a Catalog object and displays all movie titles.
  *
  * @param catalog A pointer to the Catalog object to be displayed.
  */

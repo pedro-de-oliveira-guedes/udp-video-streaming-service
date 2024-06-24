@@ -40,10 +40,11 @@ void printClientUsage();
 Client* parseArgumentsAndCreateClient(int argc, char **argv);
 
 /**
- * @brief Connects the client to the server.
- *
+ * @brief Creates an UDP socket to communicate with the server.
+ * 
  * @param client A pointer to the Client object.
  * @return 0 if the connection was successful, -1 otherwise.
+ 
  */
 int connectToServer(Client *client);
 

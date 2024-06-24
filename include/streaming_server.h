@@ -11,12 +11,6 @@
 #include "catalog.h"
 
 typedef struct {
-    Server *server;
-
-    Catalog *catalog;
-} StreamingServer;
-
-typedef struct {
     Server server;
     int movieId;
     Catalog catalog;
@@ -25,8 +19,11 @@ typedef struct {
 /**
  * @brief Creates a new ClientThreadArgs instance.
  * 
- * @param serverSocket The server socket.
+ * This structure is necessary to pass the needed arguments to the client thread.
+ * 
+ * @param server The server instance.
  * @param movieId The movie ID to be streamed.
+ * @param catalog The catalog instance.
  * 
  * @return A pointer to the newly created ClientThreadArgs instance.
  */
@@ -41,6 +38,12 @@ ClientThreadArgs* createClientThreadArgs(Server server, int movieId, Catalog cat
  */
 void *handleClientThread(void *data);
 
+typedef struct {
+    Server *server;
+
+    Catalog *catalog;
+} StreamingServer;
+
 /**
  * @brief Creates a new StreamingServer instance.
  *
@@ -52,12 +55,14 @@ void *handleClientThread(void *data);
 StreamingServer* createStreamingServer(int argc, char **argv);
 
 /**
- * @brief Handles the client requests for movie streaming.
+ * @brief Handles the client requests.
  * 
- * @param serverSocket The server socket.
- * @param movieId The movie ID to be streamed.
+ * It is necessary to receive a ClientThreadArgs instance because this function is called
+ * from a separate thread.
  * 
- * @return 0 if the client requests were successfully handled, -1 otherwise.
+ * @param clientThreadArgs A pointer to a ClientThreadArgs instance.
+ * 
+ * @return 0 if the client requests were handled successfully, -1 otherwise.
  */
 int handleClientRequests(ClientThreadArgs *clientThreadArgs);
 

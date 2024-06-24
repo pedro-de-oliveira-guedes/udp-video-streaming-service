@@ -39,6 +39,14 @@ void displayStreamingMenu(StreamingClient *streamingClient);
 void handleUserMenuChoice(StreamingClient *streamingClient);
 
 /**
+ * @brief Handles the movie request by requesting the movie from the server.
+ *
+ * @param streamingClient The StreamingClient instance.
+ * @param movieId The ID of the movie to request.
+ */
+void handleMovieRequest(StreamingClient *streamingClient, int movieId);
+
+/**
  * @brief Closes the streaming client connection and frees the allocated resources.
  *
  * This function closes the streaming client connection and releases any resources
@@ -48,13 +56,5 @@ void handleUserMenuChoice(StreamingClient *streamingClient);
  * @param streamingClient A pointer to the streaming client object.
  */
 void closeStreamingClient(StreamingClient *streamingClient);
-
-/**
- * @brief Handles the movie request by requesting the movie from the server.
- *
- * @param streamingClient The StreamingClient instance.
- * @param movieId The ID of the movie to request.
- */
-void handleMovieRequest(StreamingClient *streamingClient, int movieId);
 
 #endif

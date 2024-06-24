@@ -39,8 +39,7 @@ void printServerUsage();
 Server* parseArgumentsAndCreateServer(int argc, char **argv);
 
 /**
- * @brief Sets up the server by binding it to a port, listening for incoming connections 
- *        and showing the connection address.
+ * @brief Sets up the server by binding it to the specified IP address and port.
  *
  * @param server The Server instance.
  * @return 0 if the server was successfully set up, -1 otherwise.
