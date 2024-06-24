@@ -62,7 +62,7 @@ void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
         logError("Erro ao receber o título do filme.");
     }
 
-    printf("Assistindo ao filme: %s\n", movieTitle);
+    printf("\nAssistindo ao filme: %s\n", movieTitle);
 
     while (1) {
         int validScriptLine;
