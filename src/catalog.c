@@ -41,7 +41,7 @@ Movie *get_fight_club_movie(int shouldIncludeScripts) {
         "Escolha suas lutas com sabedoria"
     });
     } else {
-        return createMovie("O Poderoso Chefão", NULL);
+        return createMovie("Clube da Luta", NULL);
     }
 }
 
