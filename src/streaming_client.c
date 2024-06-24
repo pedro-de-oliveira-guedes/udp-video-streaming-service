@@ -44,13 +44,8 @@ void handleUserMenuChoice(StreamingClient *streamingClient) {
 }
 
 void closeStreamingClient(StreamingClient *streamingClient) {
-    int connectionEnd = -1;
-    if (sendIntegerToServer(streamingClient->client, connectionEnd) == -1) {
-        logError("Erro ao enviar a mensagem de encerramento da conexão para o servidor.");
-    }
-
     closeClient(streamingClient->client);
-    free(streamingClient);
+    free(streamingClient); // Frees the allocated memory for the StreamingClient instance.
 }
 
 void handleMovieRequest(StreamingClient *streamingClient, int movieId) {

@@ -32,7 +32,7 @@ Client* parseArgumentsAndCreateClient(int argc, char **argv) {
 }
 
 int connectToServer(Client *client) {
-    // Creates a socket for UDP communication. The UDP is defined by SOCK_DGRAM.
+    // Creates a server socket for UDP communication. The UDP is defined by "SOCK_DGRAM" option.
     client->currentServerSocket = socket(client->storage.ss_family, SOCK_DGRAM, 0);
     if (client->currentServerSocket == -1) {
         logError("Erro ao criar o socket do cliente");
@@ -42,6 +42,7 @@ int connectToServer(Client *client) {
 }
 
 int sendIntegerToServer(Client *client, int value) {
+    // Uses the sendto function to send the integer value to the server.
     return sendto(
         client->currentServerSocket,
         &value,
@@ -52,7 +53,10 @@ int sendIntegerToServer(Client *client, int value) {
 }
 
 int receiveIntegerFromServer(Client *client, int *value) {
+    // Declares a variable to store the size of the storage structure.
     socklen_t storageSize = sizeof(client->storage);
+
+    // Uses the recvfrom function to receive the integer value from the server.
     return recvfrom(
         client->currentServerSocket,
         value,
@@ -63,7 +67,10 @@ int receiveIntegerFromServer(Client *client, int *value) {
 }
 
 int receiveStringFromServer(Client *client, char *buffer, int bufferSize) {
+    // Declares a variable to store the size of the storage structure.
     socklen_t storageSize = sizeof(client->storage);
+
+    // Uses the recvfrom function to receive the string from the server.
     return recvfrom(
         client->currentServerSocket,
         buffer,
@@ -74,6 +81,6 @@ int receiveStringFromServer(Client *client, char *buffer, int bufferSize) {
 }
 
 void closeClient(Client *client) {
-    close(client->currentServerSocket);
-    free(client);
+    close(client->currentServerSocket); // Closes the server socket
+    free(client); // Frees the allocated memory for the client
 }

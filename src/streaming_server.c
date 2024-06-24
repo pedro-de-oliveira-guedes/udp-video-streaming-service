@@ -8,7 +8,7 @@
 #define BUFF_SIZE 1024
 
 int currentlyConnectedClients = 0;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; // Mutex to protect the currentlyConnectedClients variable.
 
 ClientThreadArgs* createClientThreadArgs(Server server, int movieId, Catalog catalog) {
     ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) malloc(sizeof(ClientThreadArgs));
@@ -19,6 +19,20 @@ ClientThreadArgs* createClientThreadArgs(Server server, int movieId, Catalog cat
     return clientThreadArgs;
 }
 
+void *handleClientThread(void *data) {
+    ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) data;
+    if (handleClientRequests(clientThreadArgs) != 0) {
+        logError("Erro ao lidar com as requisições do cliente.");
+    }
+
+    pthread_mutex_lock(&mutex); // Locks the mutex while updating the currentlyConnectedClients variable.
+    currentlyConnectedClients -= 1;
+    pthread_mutex_unlock(&mutex); // Unlocks the mutex after updating the currentlyConnectedClients variable.
+
+    free(clientThreadArgs); // Frees the allocated memory for the ClientThreadArgs instance.
+    pthread_exit(0); // Exits the thread.
+}
+
 StreamingServer* createStreamingServer(int argc, char **argv) {
     Server *server = parseArgumentsAndCreateServer(argc, argv);
 
@@ -27,20 +41,6 @@ StreamingServer* createStreamingServer(int argc, char **argv) {
     streamingServer->catalog = createCatalog(SHOULD_INCLUDE_SCRIPT);
 
     return streamingServer;
-}
-
-void *handleClientThread(void *data) {
-    ClientThreadArgs *clientThreadArgs = (ClientThreadArgs *) data;
-    if (handleClientRequests(clientThreadArgs) != 0) {
-        logError("Erro ao lidar com as requisições do cliente.");
-    }
-
-    pthread_mutex_lock(&mutex);
-    currentlyConnectedClients -= 1;
-    pthread_mutex_unlock(&mutex);
-
-    free(clientThreadArgs);
-    pthread_exit(0);
 }
 
 int handleClientRequests(ClientThreadArgs *clientThreadArgs) {
@@ -59,7 +59,7 @@ int handleClientRequests(ClientThreadArgs *clientThreadArgs) {
         if (sendStringToClient(&clientThreadArgs->server, (char *) movie->script[i], MAX_SCRIPT_LINE_SIZE) == -1) {
             return -1;
         }
-        sleep(3);
+        sleep(3); // Waits 3 seconds before sending the next script line.
     }
 
     validLine = 0;
@@ -73,28 +73,25 @@ int handleClientRequests(ClientThreadArgs *clientThreadArgs) {
 void closeStreamingServer(StreamingServer *streamingServer) {
     closeServer(streamingServer->server);
     destroyCatalog(streamingServer->catalog);
-    free(streamingServer);
+    free(streamingServer); // Frees the allocated memory for the StreamingServer instance.
 }
 
 void *clientCountSubroutine(void *data) {
     while (1) {
         printf("Número de clientes conectados: %d\n", currentlyConnectedClients);
-        sleep(4);
+        sleep(4); // Waits 4 seconds before printing the number of connected clients again.
     }
 }
 
 int main(int argc, char **argv) {
-    if (pthread_mutex_init(&mutex, NULL) != 0) {
-        logError("Erro ao inicializar o mutex");
-    }
-
     StreamingServer *streamingServer = createStreamingServer(argc, argv);
 
     if (setupServer(streamingServer->server) == -1) {
         logError("Erro ao configurar o servidor");
     }
 
-    pthread_t clientCountThreadId;
+    pthread_t clientCountThreadId; // Thread ID for the client count thread.
+    // Creates a new thread to count the number of connected clients while the server is running.
     pthread_create(&clientCountThreadId, NULL, clientCountSubroutine, NULL);
 
     while (1) {
@@ -110,16 +107,15 @@ int main(int argc, char **argv) {
             clientThreadData->movieId = movieId;
             clientThreadData->catalog = *streamingServer->catalog;
 
-            pthread_mutex_lock(&mutex);
+            pthread_mutex_lock(&mutex); // Locks the mutex while updating the currentlyConnectedClients variable.
             currentlyConnectedClients += 1;
-            pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&mutex); // Unlocks the mutex after updating the currentlyConnectedClients variable.
             
-            pthread_t clientThreadId;
+            pthread_t clientThreadId; // Thread ID for the client thread.
+            // Creates a new thread to handle multiple client requests
             pthread_create(&clientThreadId, NULL, handleClientThread, clientThreadData);
         }
     }
 
-    pthread_mutex_destroy(&mutex);
-    closeStreamingServer(streamingServer);
     return 0;
 }

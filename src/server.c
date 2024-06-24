@@ -20,7 +20,7 @@ Server* createServer(char *ipVersion, int port) {
         logError("Erro ao inicializar o socket do servidor");
     }
 
-    // Creates a socket for UDP communication. The UDP is defined by SOCK_DGRAM.
+    // Creates a socket for UDP communication. The UDP is defined by the "SOCK_DGRAM" option.
     server->socket = socket(server->storage.ss_family, SOCK_DGRAM, 0);
     if (server->socket == -1) {
         logError("Erro ao criar o socket do servidor");
@@ -49,7 +49,7 @@ Server* parseArgumentsAndCreateServer(int argc, char **argv) {
 }
 
 int setupServer(Server *server) {
-    // Binds the server socket to the specified address.
+    // Binds the server socket to the specified IP address and port.
     if (bind(server->socket, (struct sockaddr *)&server->storage, sizeof(server->storage)) == -1) {
         return -1;
     }
@@ -58,7 +58,10 @@ int setupServer(Server *server) {
 }
 
 int receiveIntegerFromClient(Server *server, int *value) {
+    // Declares a variable to store the size of the storage structure.
     socklen_t storageSize = sizeof(server->storage);
+
+    // Uses the recvfrom function to receive the integer value from the client.
     return recvfrom(
             server->socket,
             value,
@@ -69,6 +72,7 @@ int receiveIntegerFromClient(Server *server, int *value) {
 }
 
 int sendIntegerToClient(Server *server, int value) {
+    // Uses the sendto function to send the integer value to the client.
     return sendto(
             server->socket,
             &value,
@@ -79,6 +83,7 @@ int sendIntegerToClient(Server *server, int value) {
 }
 
 int sendStringToClient(Server *server, char *buffer, size_t bufferSize) {
+    // Uses the sendto function to send the string to the client.
     return sendto(
             server->socket,
             buffer,
@@ -89,6 +94,6 @@ int sendStringToClient(Server *server, char *buffer, size_t bufferSize) {
 }
 
 void closeServer(Server *server) {
-    close(server->socket);
-    free(server);
+    close(server->socket); // Closes the server socket.
+    free(server); // Frees the allocated memory for the server.
 }
