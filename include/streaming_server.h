@@ -17,18 +17,20 @@ typedef struct {
 } StreamingServer;
 
 typedef struct {
-    StreamingServer *streamingServer;
+    Server server;
     int movieId;
+    Catalog catalog;
 } ClientThreadArgs;
 
 /**
  * @brief Creates a new ClientThreadArgs instance.
  * 
- * @param streamingServer The StreamingServer instance.
+ * @param serverSocket The server socket.
+ * @param movieId The movie ID to be streamed.
  * 
  * @return A pointer to the newly created ClientThreadArgs instance.
  */
-ClientThreadArgs* createClientThreadArgs(StreamingServer *streamingServer, int movieId);
+ClientThreadArgs* createClientThreadArgs(Server server, int movieId, Catalog catalog);
 
 /**
  * @brief Handles the client requests in a separate thread.
@@ -52,12 +54,12 @@ StreamingServer* createStreamingServer(int argc, char **argv);
 /**
  * @brief Handles the client requests for movie streaming.
  * 
- * @param streamingServer The StreamingServer instance.
+ * @param serverSocket The server socket.
  * @param movieId The movie ID to be streamed.
  * 
  * @return 0 if the client requests were successfully handled, -1 otherwise.
  */
-int handleClientRequests(StreamingServer *streamingServer, int movieId);
+int handleClientRequests(ClientThreadArgs *clientThreadArgs);
 
 /**
  * @brief Closes the streaming server connection and frees the allocated resources.

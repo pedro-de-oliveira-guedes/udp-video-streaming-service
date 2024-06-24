@@ -44,8 +44,6 @@ void handleUserMenuChoice(StreamingClient *streamingClient) {
 }
 
 void closeStreamingClient(StreamingClient *streamingClient) {
-    printf("Saindo do apliacativo de streaming...\n");
-
     int connectionEnd = -1;
     if (sendIntegerToServer(streamingClient->client, connectionEnd) == -1) {
         logError("Erro ao enviar a mensagem de encerramento da conexão para o servidor.");
@@ -80,7 +78,6 @@ void handleMovieRequest(StreamingClient *streamingClient, int movieId) {
             printf("Fim do filme.\n\n\n\n");
             break;
         }
-        printf("Linha de script %d válida.\n", validScriptLine);
 
         char scriptLine[MAX_SCRIPT_LINE_SIZE];
         if (receiveStringFromServer(streamingClient->client, scriptLine, MAX_SCRIPT_LINE_SIZE) == -1) {
